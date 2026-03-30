@@ -93,3 +93,6 @@ INSERT INTO public.charities (name, description, active_status) VALUES
 ('Tee Off Hunger', 'Local food bank support initiatives.', true);
 
 -- Note: Ensure Row Level Security (RLS) is enabled and appropriate policies are applied for production use.
+
+-- ADMIN SETUP: After a user signs up via the app, promote them to admin with:
+-- UPDATE public.users SET role = 'admin' WHERE email = 'your-admin@email.com';
