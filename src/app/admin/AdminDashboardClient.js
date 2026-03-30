@@ -513,7 +513,7 @@ export default function AdminDashboardClient({
                   <thead>
                     <tr>
                       <th>User</th>
-                      <th>Stripe ID</th>
+                      <th>Sub ID</th>
                       <th>Status</th>
                       <th>Tier</th>
                       <th>Next Renewal</th>
@@ -525,7 +525,7 @@ export default function AdminDashboardClient({
                       <tr key={s.id}>
                         <td>{s.users?.email || "—"}</td>
                         <td className={styles.monoCell}>
-                          {s.stripe_id?.slice(0, 20)}...
+                          {s.id.slice(0, 8)}...
                         </td>
                         <td>
                           <span

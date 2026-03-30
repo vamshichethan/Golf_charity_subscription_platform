@@ -25,8 +25,8 @@ CREATE TABLE public.users (
 CREATE TABLE public.subscriptions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
-    stripe_id TEXT UNIQUE NOT NULL,
-    status TEXT NOT NULL,
+    stripe_id TEXT UNIQUE, -- Now optional
+    status TEXT NOT NULL DEFAULT 'active',
     tier TEXT CHECK (tier IN ('monthly', 'yearly')),
     next_renewal TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL

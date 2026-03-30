@@ -14,7 +14,7 @@ export default function Pricing() {
     setError(null);
 
     try {
-      const res = await fetch("/api/stripe/checkout", {
+      const res = await fetch("/api/subscriptions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tier }),
@@ -24,7 +24,6 @@ export default function Pricing() {
 
       if (!res.ok) {
         if (res.status === 401) {
-          // Not logged in — redirect to login
           router.push("/login");
           return;
         }
@@ -33,8 +32,8 @@ export default function Pricing() {
         return;
       }
 
-      // Redirect to Stripe Checkout
-      window.location.href = data.url;
+      // Success — Redirect to Dashboard
+      router.push("/dashboard?subscription=active");
     } catch (err) {
       setError("Network error. Please try again.");
       setLoading(null);
@@ -170,7 +169,7 @@ export default function Pricing() {
 
       <section className={styles.trustSection}>
         <p className={styles.trustText}>
-          🔒 Secured by Stripe. Cancel anytime. 10% of every subscription goes
+          🔒 SwingForGood Secure Membership. Cancel anytime. 10% of every subscription goes
           directly to your chosen charity.
         </p>
       </section>
