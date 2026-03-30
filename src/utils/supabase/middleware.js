@@ -42,31 +42,6 @@ export async function updateSession(request) {
     return NextResponse.redirect(url);
   }
 
-  // Subscription check for /dashboard
-  if (isProtectedRoute && user) {
-    // Check if user is admin (admins bypass subscription check)
-    const { data: userData } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (userData?.role !== 'admin') {
-      const { data: subData } = await supabase
-        .from('subscriptions')
-        .select('status')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .single();
-
-      if (!subData) {
-        const url = request.nextUrl.clone();
-        url.pathname = '/pricing';
-        return NextResponse.redirect(url);
-      }
-    }
-  }
-
   // Admin route protection
   const isAdminRoute = request.nextUrl.pathname.startsWith('/admin');
   const isAdminLogin = request.nextUrl.pathname === '/admin/login';

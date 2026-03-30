@@ -17,7 +17,6 @@ export default async function Dashboard() {
     if (process.env.NEXT_PUBLIC_SUPABASE_URL && user) {
       // 1. Subscription
       const { data: subData } = await supabase.from('subscriptions').select('*').eq('user_id', user.id).eq('status', 'active').single();
-      if (!subData) redirect("/pricing");
       
       // 2. Scores
       const { data: realScores } = await supabase.from('scores').select('*').eq('user_id', user.id).order('date', { ascending: false }).limit(5);
@@ -70,42 +69,26 @@ export default async function Dashboard() {
       <div className={styles.header}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%', gap: '1rem', flexWrap: 'wrap' }}>
           <div>
-            <h1 className={styles.title}>Welcome back, Golfer</h1>
+            <h1 className={styles.title}>⛳ Score Management</h1>
             <p className={styles.subtitle}>
-              Subscription: <strong style={{ color: 'var(--success)' }}>Active ({subscription?.tier})</strong> 
-              {subscription?.next_renewal && ` • Renews ${new Date(subscription.next_renewal).toLocaleDateString()}`}
+              {subscription ? (
+                <>Subscription: <strong style={{ color: 'var(--success)' }}>Active ({subscription.tier})</strong></>
+              ) : (
+                <>Status: <strong style={{ color: 'var(--warn)' }}>Free Tier</strong> (Subscribe for Draws)</>
+              )}
             </p>
           </div>
-          <a href="#" className={styles.manageLink}>Manage Billing</a>
+          <a href="/pricing" className={styles.manageLink}>View Plans</a>
         </div>
       </div>
 
       <div className={styles.dashboardContainer}>
         <div className="main-col">
-          {/* Winners Section */}
-          {userWinnings.length > 0 && (
-            <div className={`${styles.card} ${styles.winnerCard}`}>
-              <h2 className={styles.cardTitle}><Award size={20} color="#ffd700" /> You're a Winner!</h2>
-              <div className={styles.winningsList}>
-                {userWinnings.map((win) => (
-                  <div key={win.id} className={styles.winItem}>
-                    <div className={styles.winMeta}>
-                      <span className={styles.winTitle}>{win.match_type} Match</span>
-                      <span className={styles.winDate}>{new Date(win.draws.date).toLocaleDateString()}</span>
-                    </div>
-                    <div className={styles.winAmount}>+£{parseFloat(win.payout_amount).toFixed(2)}</div>
-                    <div className={`${styles.winStatus} ${styles[`status_${win.payout_status}`]}`}>
-                      {win.payout_status}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Scores Section */}
           <div className={styles.card}>
-            <h2 className={styles.cardTitle}><Activity size={20} color="var(--primary)" /> Rolling 5 Scores (Stableford)</h2>
+            <h2 className={styles.cardTitle}><Activity size={20} color="var(--primary)" /> Rolling 5 Scores</h2>
+            <p className={styles.infoText}>
+              Enter your latest scores (1–45 Stableford). We only store your last 5; adding a new one replaces the oldest automatically.
+            </p>
             <div className={styles.scoreList}>
               {scores.map((s) => (
                 <div key={s.id} className={styles.scoreItem}>
@@ -117,8 +100,8 @@ export default async function Dashboard() {
             </div>
             
             <form action={addScore} className={styles.scoreInput}>
-              <input type="number" name="score" min="1" max="45" placeholder="New Score (1-45)" className={styles.inputField} required />
-              <button type="submit" className={styles.btnAction} style={{width: 'auto'}}>Add</button>
+              <input type="number" name="score" min="1" max="45" placeholder="Score (1-45)" className={styles.inputField} required />
+              <button type="submit" className={styles.btnAction} style={{width: 'auto'}}>Save Score</button>
             </form>
           </div>
 
